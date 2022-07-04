@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="crossorigin="anonymous"></script>
+		<link rel="icon" href="./images/logo.ico" type="image/x-icon">
+		<link rel="stylesheet" href="styles.css">
+		<title>PUP Map</title>
+	</head>
+
+	<body>
+		<div class="container">
+		<img src="./images/banner.png" style="width: 100%; height: auto;" alt="pup banner">
+			<div>
+				<svg id='polys'/>
+			</div>
+			<div class="float1">
+				<div class="info-container">
+				<img src="" alt="">
+				<h3></h3>
+				<p></p>
+				</div>
+			</div>
+			<div class='info-map-container'>
+				<img src="./images/9569207.gif" alt="pup map" id="info-map">
+			</div>
+		</div>
+		
+		<script>
+			let popups = [{
+				'name': 'chapel',
+				'title': 'Interfaith Chapel',
+				'source': './images/chapel.jpg',
+				'coords': { r: 50, x: 345, y: 416 },
+				'details': 'A chapel to do religous events.'
+			},{
+				'name': 'dome',
+				'title': 'Dome',
+				'source': './images/dome.jpg',
+				'coords': { r: 25, x: 258, y: 361 },
+				'details': 'The center area of the building. It has a ramp for push carts and other things with wheels.'
+			},{
+				'name': 'oval',
+				'title': 'Oval',
+				'source': './images/oval.jpg',
+				'coords': { p: '601,363 545,445 537,453 512,464 491,462 474,457 457,440 449,423 446,403 451,383 507,300 520,290 548,284 563,286 580,293 597,310 606,337' },
+				'details': 'The Oval is the place where athletes and students do their sports and other physical activities.'
+			},{
+				'name': 'northwing',
+				'title': 'North Wing',
+				'source': './images/north.jpg',
+				'coords': { p: '271,330 289,365 359,329 354.5,309 348,294 339,290' },
+				'details': 'The north part of the main building.'
+			},{
+				'name': 'eastwing',
+				'title': 'East Wing',
+				'source': './images/east.jpg',
+				'coords': { p: '278,386 275,387 239,387 237,466 260,475 273,468' },
+				'details': 'The right part of the main building.'
+			},{
+				'name': 'westwing',
+				'title': 'West Wing',
+				'source': './images/west.jpg',
+				'coords': { p: '179.5,287 244.5,330.5 225,363 159,324 164,297' },
+				'details': 'The left part of the main building.'
+			},{
+				'name': 'southwing',
+				'title': 'South Wing',
+				'source': './images/south.jpg',
+				'coords': { p: '182,342 234,439 195,464 140,365' },
+				'details': 'The south part of the main building.'
+			},{
+				'name': 'labhigh',
+				'title': 'Laboratory Highschool',
+				'source': './images/lab.jpg',
+				'coords': { p: '187,207 165,102 106,69 75,116 85,150' },
+				'details': 'This is an area for the Junior High School of PUP.'
+			},{
+				'name': 'gymnasium',
+				'title': 'Gymnasium',
+				'source': './images/gymn.jpeg',
+				'coords': { p: '462,119 462,63 569,63 563,119' },
+				'details': 'Under construction. This is where formal and casual events happen. This is also a plays where athletes and students do their physical activities.'
+			}]
+			const popupClass = 'popup';
+
+			popups.forEach( function(shape){
+			if (shape.coords.r === undefined) {
+				createPoly(shape.name, shape.title, shape.source, shape.coords.p, shape.details);
+			} else {
+				createCircle(shape.name, shape.title, shape.source, shape.coords.r, shape.coords.x, shape.coords.y, shape.details);
+			}
+			});
+
+			function createCircle(name, title, source, r, x, y, details) {
+			const newcircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+			$(newcircle).on('mouseenter', function(){ loadInfo(title, source, details) });
+			$(newcircle).attr({
+			'id':name, 
+				'class': popupClass, 
+				'cx': x, 
+				'cy': y, 
+				'r': r 
+			});
+      
+			$('#polys').append(newcircle);
+			};
+
+			function createPoly(name, title, source, p, details) {
+			const newpolygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+			$(newpolygon).on('mouseenter', function(){ loadInfo(title, source, details) });
+			$(newpolygon).attr({
+				'id': name,
+				'class': popupClass, 
+				'points': p
+			});
+
+			$('#polys').append(newpolygon);
+			};
+
+			function loadInfo(title, source, details) {
+			$('.info-container img').attr({src: source, alt: title});
+			$('.info-container h3').text(title);
+			$('.info-container p').text(details);
+
+			$('.float1').show();
+			};
+
+			$('.popup').on('mouseover mousemove click', function(){
+			let x = event.pageX - $('#polys').offset().left;
+			let y = event.pageY;
+
+			$('.float1').css({ transform:'translate3d('+ x +'px,'+ y +'px,0px)'});
+			});
+
+			$('.popup').on('mouseleave', function(){
+			$('.float1').hide();
+			});
+		</script>
+	</body>
+</html>
